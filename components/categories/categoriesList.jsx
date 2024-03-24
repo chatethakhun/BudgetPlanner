@@ -11,7 +11,7 @@ const CategoryList = ({ categories }) => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ gap: 10, marginTop: 10 }}
+        contentContainerStyle={{ gap: 10, marginTop: 10, paddingBottom: 10 }}
       >
         {categories.map((category, index) => (
           <View
