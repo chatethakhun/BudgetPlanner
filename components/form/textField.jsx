@@ -23,6 +23,7 @@ const TextField = ({
         gap: 10,
         borderWidth: 2,
         borderColor: COLORS.grey,
+        elevation: 1,
       }}
     >
       <View style={{ width: wp(5), alignItems: "center" }}>{icon}</View>

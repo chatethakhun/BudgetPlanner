@@ -3,13 +3,13 @@ import { Slot, useRouter, useSegments } from "expo-router";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const MainLayout = () => {
   const { user, isAuthenticated, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
   useEffect(() => {
-
     const inApp = segments[0] === "(app)";
 
     if (loading) {
@@ -37,11 +37,13 @@ export default function RootLayout() {
   if (!fontsLoaded || fontError) {
     return null;
   }
-  
+
   return (
-    <AuthProvider>
-      <StatusBar style="dark" />
-      <MainLayout />
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <StatusBar style="dark" />
+        <MainLayout />
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
