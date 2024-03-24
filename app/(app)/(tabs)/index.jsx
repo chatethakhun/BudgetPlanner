@@ -14,12 +14,13 @@ const HomePage = () => {
     try {
       let { data: categories, error } = await supabase
         .from(MODEL_NAME.CATEGORY)
-        .select("*")
+        .select("*, CategoryItems(*)")
         .eq("created_by", user.email);
 
       if (error) {
         throw error;
       }
+
 
       setCategories(categories);
     } catch (error) {
@@ -34,7 +35,8 @@ const HomePage = () => {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="dark" />
-      <HomeHeader />
+      <HomeHeader categories={[1,2,43,4,4,4,4,4,4,4,4,4]} />
+
     </View>
   );
 };

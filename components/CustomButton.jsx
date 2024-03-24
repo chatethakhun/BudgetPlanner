@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS } from "../constant/theme";
 import {
@@ -8,7 +8,7 @@ import {
 
 const CustomButton = ({ onPress, label }) => {
   return (
-    <Pressable
+    <TouchableOpacity
       style={{
         width: wp("100%") - 40,
         alignItems: "center",
@@ -28,7 +28,7 @@ const CustomButton = ({ onPress, label }) => {
       >
         {label}
       </Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

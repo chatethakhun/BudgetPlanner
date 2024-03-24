@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Image } from "expo-image";
@@ -8,16 +8,19 @@ import { COLORS } from "../constant/theme";
 import { Octicons } from "@expo/vector-icons";
 import CircularChart from "./CircularChart";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
+import CategoryList from "./categories/categoriesList";
 
-const HomeHeader = () => {
+const HomeHeader = ({ categories = [] }) => {
   const { user } = useAuth();
+  const router = useRouter();
 
   return (
     <View style={{ flex: 1 }}>
       <View
         style={{
-          height: hp(18),
+          flex: 1,
+          maxHeight: hp(18),
           backgroundColor: COLORS.primary,
           paddingHorizontal: 15,
         }}
@@ -25,22 +28,19 @@ const HomeHeader = () => {
         <View
           style={{
             flexDirection: "row",
-            alignItems: "end",
             justifyContent: "space-between",
-            marginTop: hp(3),
-            marginBottom: hp(2),
+            marginTop: hp(6),
+            marginBottom: 10,
           }}
         >
           <View
             style={{
-              flex: 1,
               height: "100%",
-              paddingBottom: 10,
               flexDirection: "row",
               gap: 10,
-              marginTop: hp(2),
               alignItems: "center",
               justifyContent: "space-between",
+              width: "100%",
             }}
           >
             <View style={{ flexDirection: "row", gap: 15 }}>
@@ -90,32 +90,29 @@ const HomeHeader = () => {
         </View>
 
         <CircularChart />
+
+        <CategoryList categories={categories} />
       </View>
-      <Link
-        href="addNewCategory"
+      <TouchableOpacity
+      onPress={() => router.push("/addNewCategory")}
         style={{
           position: "absolute",
           bottom: 16,
           right: 16,
+          height: 50,
+          aspectRatio: 1,
+          backgroundColor: COLORS.primary,
+          borderRadius: 30,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <View
-          style={{
-            height: hp(6),
-            aspectRatio: 1,
-            backgroundColor: COLORS.primary,
-            borderRadius: 100,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <MaterialCommunityIcons
-            name="plus-thick"
-            size={hp(4)}
-            color={"white"}
-          />
-        </View>
-      </Link>
+        <MaterialCommunityIcons
+          name="plus-thick"
+          size={hp(4)}
+          color={"white"}
+        />
+      </TouchableOpacity>
     </View>
   );
 };

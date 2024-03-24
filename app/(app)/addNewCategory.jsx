@@ -1,4 +1,4 @@
-import { Text, Pressable, View, Alert } from "react-native";
+import { Text, Pressable, View, Alert, TouchableOpacity } from "react-native";
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import TextField from "../../components/form/textField";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
@@ -68,7 +68,7 @@ const AddNewCategory = () => {
 
   return (
     <View style={{ flex: 1, padding: 20, gap: 20, alignItems: "center" }}>
-      <Pressable onPress={() => bottomSheetRef.current.snapToIndex(0)}>
+      <TouchableOpacity onPress={() => bottomSheetRef.current.snapToIndex(0)}>
         <View
           style={{
             height: 60,
@@ -88,7 +88,7 @@ const AddNewCategory = () => {
             {emojiSelected}
           </Text>
         </View>
-      </Pressable>
+      </TouchableOpacity>
 
       <ColorPicker
         colorsOptions={pastelColors}
