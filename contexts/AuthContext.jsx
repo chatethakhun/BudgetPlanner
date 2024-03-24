@@ -16,8 +16,11 @@ export const AuthProvider = ({ children }) => {
   const checkAuthenticate = async () => {
     // Using `isAuthenticated` to check if the user is authenticated or not
     if (await client.isAuthenticated) {
+      const user = await client.getUserDetails();
+      
       setIsAuthenticated(true);
       setLoading(false);
+      setUser(user);
         // Need to implement, e.g: call an api, etc...
     } else {
       setIsAuthenticated(false);

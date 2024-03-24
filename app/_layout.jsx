@@ -16,9 +16,9 @@ const MainLayout = () => {
     }
 
     if (isAuthenticated && !inApp) {
-      router.push("/(tabs)");
+      router.replace("/(tabs)");
     } else if (!isAuthenticated) {
-      router.push("/login");
+      router.replace("/login");
     }
     // You can add global side effects here
   }, [loading, isAuthenticated]);

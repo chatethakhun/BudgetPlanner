@@ -1,12 +1,42 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, Alert } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import supabase from "../../../configs/supabase";
+import MODEL_NAME from "../../../constant/model";
+import { useAuth } from "../../../contexts/AuthContext";
+import HomeHeader from "../../../components/HomeHeader";
+import { StatusBar } from "expo-status-bar";
 
 const HomePage = () => {
-  return (
-    <View>
-      <Text>HomePage</Text>
-    </View>
-  )
-}
+  const { user } = useAuth();
+  const [categories, setCategories] = useState([]);
 
-export default HomePage
+  const getCategories = useCallback(async () => {
+    try {
+      let { data: categories, error } = await supabase
+        .from(MODEL_NAME.CATEGORY)
+        .select("*")
+        .eq("created_by", user.email);
+
+      if (error) {
+        throw error;
+      }
+
+      setCategories(categories);
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
+  }, [user.email]);
+
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <StatusBar style="dark" />
+      <HomeHeader />
+    </View>
+  );
+};
+
+export default HomePage;
