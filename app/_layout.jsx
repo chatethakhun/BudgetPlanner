@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Slot, useRouter, useSegments } from "expo-router";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
 import { StatusBar } from "expo-status-bar";
+import { useFonts } from "expo-font";
 
 const MainLayout = () => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -27,6 +28,16 @@ const MainLayout = () => {
 };
 
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    "Outfit-Regular": require("../assets/fonts/Outfit-Regular.ttf"),
+    "Outfit-Bold": require("../assets/fonts/Outfit-Bold.ttf"),
+    "Outfit-Medium": require("../assets/fonts/Outfit-Medium.ttf"),
+  });
+
+  if (!fontsLoaded || fontError) {
+    return null;
+  }
+  
   return (
     <AuthProvider>
       <StatusBar style="dark" />
