@@ -15,7 +15,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 
-const pastelColors = [
+export const pastelColors = [
   "#ffb6c1", // Light pink
   "#ffdead", // Navajo white
   "#add8e6", // Light blue

@@ -89,7 +89,7 @@ const HomeHeader = ({ categories = [] }) => {
           </View>
         </View>
 
-        <CircularChart />
+        <CircularChart categories={categories} />
 
         <CategoryList categories={categories} />
       </View>
