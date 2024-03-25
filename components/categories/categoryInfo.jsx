@@ -1,14 +1,63 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Alert, ActivityIndicator } from "react-native";
 import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { COLORS } from "../../constant/theme";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import * as Progress from "react-native-progress";
+import DeleteDialog from "../DeleteDialog";
+import supabase from "../../configs/supabase";
+import MODEL_NAME from "../../constant/model";
+import { useRouter } from "expo-router";
+import { useToast } from "react-native-toast-notifications";
 
 const CategoryInfo = ({ category }) => {
-  const sumCost = category.CategoryItems?.reduce((acc, item) => acc + item.cost, 0);
+  const [visible, setVisible] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  const progressPercentage = (sumCost / category.assigned_budget ?? 0);
+  const sumCost = category.CategoryItems?.reduce(
+    (acc, item) => acc + item.cost,
+    0
+  );
+
+  const progressPercentage = sumCost / category.assigned_budget ?? 0;
+
+  const router = useRouter();
+  const toast = useToast();
+
+  const confirmDelete = async () => {
+    setVisible(false);
+    // Delete category
+
+    try {
+      setLoading(true);
+      const { error } = await supabase
+        .from(MODEL_NAME.CATEGORY_ITEMS)
+        .delete()
+        .eq("category_id", category.id);
+
+      const { data, status } = await supabase
+        .from(MODEL_NAME.CATEGORY)
+        .delete()
+        .eq("id", category.id);
+
+      if (status === 204) {
+        // Success
+        router.replace({
+          pathname: "(tabs)",
+        });
+
+        toast.show("Category deleted", {
+          type: "success",
+        });
+      }else {
+        throw error;
+      }
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View>
@@ -41,13 +90,28 @@ const CategoryInfo = ({ category }) => {
           </Text>
         </View>
 
-        <Pressable style={{ marginLeft: "auto", justifyContent: "center" }}>
-          <FontAwesome name="trash" size={hp(3)} color={COLORS.red} />
-        </Pressable>
+        {!loading ? (
+          <Pressable
+            style={{ marginLeft: "auto", justifyContent: "center" }}
+            onPress={() => setVisible(true)}
+          >
+            <FontAwesome name="trash" size={hp(3)} color={COLORS.red} />
+          </Pressable>
+        ) : (
+          <View style={{ marginLeft: "auto", justifyContent: "center" }}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+          </View>
+        )}
       </View>
 
       <View style={{ marginTop: 10 }}>
-        <View style={{ marginBottom: 5, flexDirection: "row", justifyContent: "space-between" }}>
+        <View
+          style={{
+            marginBottom: 5,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
           <Text style={{ fontFamily: "Outfit-Bold", fontSize: hp(1.8) }}>
             {`$${sumCost ?? 0}`}
           </Text>
@@ -71,6 +135,14 @@ const CategoryInfo = ({ category }) => {
           }}
         />
       </View>
+
+      <DeleteDialog
+        visible={visible}
+        title="Item delete"
+        description="Do you want to delete this item? You cannot undo this action."
+        onCancel={() => setVisible(false)}
+        onConfirm={confirmDelete}
+      />
     </View>
   );
 };

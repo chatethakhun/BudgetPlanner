@@ -16,6 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import supabase from "../../configs/supabase";
 import { decode } from "base64-arraybuffer";
 import { useToast } from "react-native-toast-notifications";
+import DeleteDialog from "../../components/DeleteDialog";
 
 const AddNewCategoryItem = () => {
   const { categoryId } = useLocalSearchParams();
