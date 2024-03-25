@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "../contexts/AuthContext";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ToastProvider } from "react-native-toast-notifications";
 
 const MainLayout = () => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -41,8 +42,10 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
-        <StatusBar style="dark" />
-        <MainLayout />
+        <ToastProvider>
+          <StatusBar style="dark" />
+          <MainLayout />
+        </ToastProvider>
       </AuthProvider>
     </GestureHandlerRootView>
   );

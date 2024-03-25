@@ -54,6 +54,9 @@ export default function AppLayout() {
           },
         }}
       />
+
+
+      <Stack.Screen name="addNewCategoryItem" options={{ headerTitle: "Add Category Item"}} />
     </Stack>
   );
 }

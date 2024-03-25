@@ -7,14 +7,13 @@ import { COLORS } from "../../constant/theme";
 import CustomButton from "../../components/CustomButton";
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
-import BottomSheet, {
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import ColorPicker from "../../components/form/colorPicker";
-import supabase from '../../configs/supabase'
-import MODEL_NAME from '../../constant/model'
+import supabase from "../../configs/supabase";
+import MODEL_NAME from "../../constant/model";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "expo-router";
+import { useToast } from "react-native-toast-notifications";
 
 const pastelColors = [
   "#ffb6c1", // Light pink
@@ -26,42 +25,51 @@ const pastelColors = [
   "#f0e68c", // Khaki
 ];
 const AddNewCategory = () => {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const [emojiSelected, setEmojiSelected] = useState(null);
   const [colorSelected, setColorSelected] = useState(pastelColors[2]);
   const categoryName = useRef("");
   const totalBudget = useRef(0);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const bottomSheetRef = React.useRef(null);
   const initialSnapPoints = useMemo(() => ["75%", "100%"], []);
 
+  const toast = useToast();
+
   const onCreateCategory = useCallback(async () => {
-    console.log("Category Created");
     if (
       emojiSelected &&
       categoryName.current &&
       totalBudget.current &&
       colorSelected
     ) {
-      console.log("Category Created");
-
       try {
+        setLoading(true);
         const { status } = await supabase.from(MODEL_NAME.CATEGORY).insert([
           {
             name: categoryName.current,
             icon: emojiSelected,
             color: colorSelected,
             assigned_budget: totalBudget.current,
-            created_by: user.email
-          }
-        ])
+            created_by: user.email,
+          },
+        ]);
 
-        if(status === 201) {
-          router.back()
+        if (status === 201) {
+          router.replace({
+            pathname: "(tabs)",
+          });
+
+          toast.show("Category created successfully", {
+            type: "success",
+          })
         }
       } catch (error) {
-        Alert.alert("Error", error.message)
+        Alert.alert("Error", error.message);
+      } finally {
+        setLoading(false);
       }
     }
   }, [emojiSelected, categoryName.current, totalBudget.current, colorSelected]);
@@ -109,7 +117,11 @@ const AddNewCategory = () => {
         placeholder="Total Budget"
         onChangeText={(text) => (totalBudget.current = text)}
       />
-      <CustomButton label={"Add Category"} onPress={onCreateCategory} />
+      <CustomButton
+        label={"Add Category"}
+        onPress={onCreateCategory}
+        loading={loading}
+      />
 
       <BottomSheet
         ref={bottomSheetRef}

@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS } from "../constant/theme";
 import {
@@ -6,11 +6,11 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-const CustomButton = ({ onPress, label }) => {
+const CustomButton = ({ onPress, label, loading }) => {
   return (
     <TouchableOpacity
       style={{
-        width: wp("100%") - 40,
+        width: "100%",
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: COLORS.primary,
@@ -19,7 +19,7 @@ const CustomButton = ({ onPress, label }) => {
       }}
       onPress={onPress}
     >
-      <Text
+      {!loading ? <Text
         style={{
           color: "white",
           fontFamily: "Outfit-Regular",
@@ -27,7 +27,7 @@ const CustomButton = ({ onPress, label }) => {
         }}
       >
         {label}
-      </Text>
+      </Text> : <ActivityIndicator  color="white" />}
     </TouchableOpacity>
   );
 };

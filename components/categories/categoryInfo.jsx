@@ -6,9 +6,9 @@ import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import * as Progress from "react-native-progress";
 
 const CategoryInfo = ({ category }) => {
-  const sumCost = category.CategoryItems?.reduce(categoryItem => categoryItem.cost, 0);
+  const sumCost = category.CategoryItems?.reduce((acc, item) => acc + item.cost, 0);
 
-  const progressPercentage = (sumCost / category.assigned_budget ?? 0) * 100;
+  const progressPercentage = (sumCost / category.assigned_budget ?? 0);
 
   return (
     <View>
