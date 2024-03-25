@@ -35,7 +35,7 @@ const HomePage = () => {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="dark" />
-      <HomeHeader categories={[1,2,43,4,4,4,4,4,4,4,4,4]} />
+      <HomeHeader categories={categories} />
 
     </View>
   );
