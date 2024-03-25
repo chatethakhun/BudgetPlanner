@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import client from "../configs/kinde";
+import supabase from "../configs/supabase";
 
 const AuthContext = createContext({
   user: null,
@@ -14,38 +14,48 @@ export const AuthProvider = ({ children }) => {
   const [executing, setExecuting] = useState(false);
 
   const checkAuthenticate = async () => {
-    // Using `isAuthenticated` to check if the user is authenticated or not
-    if (await client.isAuthenticated) {
-      const user = await client.getUserDetails();
-      
-      setIsAuthenticated(true);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setIsAuthenticated(true);
+        setUser(session.user);
+      } else {
+        setIsAuthenticated(false);
+      }
       setLoading(false);
-      setUser(user);
-        // Need to implement, e.g: call an api, etc...
-    } else {
-      setIsAuthenticated(false);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setIsAuthenticated(true);
+        setUser(session.user);
+      } else {
+        setIsAuthenticated(false);
+      }
       setLoading(false);
-        // Need to implement, e.g: redirect user to sign in, etc..
-    }
-};
+    });
+  };
 
   useEffect(() => {
     checkAuthenticate();
   }, []);
 
-  const login = async () => {
+  const login = async ({ email, password }) => {
     setExecuting(true);
     try {
-      const user = await client.login();
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-      if(!user) {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
         return;
       }
-      
+
       setIsAuthenticated(true);
-      setUser(user);
+      setUser(userData.user);
     } catch (error) {
-      
+      console.log(error);
     } finally {
       setExecuting(false);
     }
@@ -53,10 +63,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await client.logout();
+      await supabase.auth.signOut();
+      setUser(null);
       setIsAuthenticated(false);
     } catch (error) {
-      
+      console.log(error);
     }
   };
 

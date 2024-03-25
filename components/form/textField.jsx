@@ -13,6 +13,7 @@ const TextField = ({
   icon,
   keyboardType = "default",
   numberOfLines = 1,
+  secureTextEntry = false,
 }) => {
   return (
     <View
@@ -49,6 +50,7 @@ const TextField = ({
         keyboardType={keyboardType}
         numberOfLines={numberOfLines}
         multiline={numberOfLines > 1}
+        secureTextEntry={secureTextEntry}
       />
     </View>
   );

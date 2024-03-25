@@ -1,21 +1,23 @@
-import { View, Text, Pressable } from "react-native";
-import React from "react";
+import { View, Text, Pressable, Alert, ActivityIndicator } from "react-native";
+import React, { useRef } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import { blurhash } from "../constant/common";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { COLORS } from "../constant/theme";
-import { Controller, useForm } from "react-hook-form";
-import TextField from "../components/form/textField";
-import client from "../configs/kinde";
 import { useAuth } from "../contexts/AuthContext";
+import TextField from "../components/form/textField";
 
 const LoginPage = () => {
-  const { login } = useAuth();
+  const { login, executing } = useAuth();
+  const email = useRef("");
+  const password = useRef("");
 
   const handleLogin = async () => {
+    if (!email.current || !password.current)
+      return Alert.alert("Please fill all fields");
     try {
-      await login();
+      await login({ email: email.current, password: password.current });
     } catch (error) {}
   };
 
@@ -58,6 +60,18 @@ const LoginPage = () => {
           </Text>
         </View>
 
+        <View style={{ gap: 15 }}>
+          <TextField
+            placeholder={"Email"}
+            onChangeText={(text) => (email.current = text)}
+          />
+          <TextField
+            secureTextEntry
+            placeholder={"Password"}
+            onChangeText={(text) => (password.current = text)}
+          />
+        </View>
+
         <View style={{ flex: 1, width: "100%" }}>
           <Pressable
             style={{
@@ -70,11 +84,20 @@ const LoginPage = () => {
             }}
             onPress={handleLogin}
           >
-            <Text
-              style={{ color: "black", textAlign: "right", fontSize: hp(2), fontWeight: "bold"}}
-            >
-              {"Continue to Sign Up/Sign In.".toUpperCase()}
-            </Text>
+            {!executing ? (
+              <Text
+                style={{
+                  color: COLORS.darkGrey,
+                  textAlign: "right",
+                  fontSize: hp(2),
+                  fontWeight: "bold",
+                }}
+              >
+                {"Sign In".toUpperCase()}
+              </Text>
+            ) : (
+              <ActivityIndicator size="small" color={COLORS.primary} />
+            )}
           </Pressable>
         </View>
       </View>
